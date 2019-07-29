@@ -9,14 +9,19 @@ use Doctrine\ORM\EntityManagerInterface;
 class RbcUpdater
 {
     /**
-     * @var string
+     * @var App\Service\Parser\RbcParser
      */
     private $parser;
 
     /**
-     * @var string
+     * @var \App\Repository\NewsRepository
      */
     private $repository;
+
+    /**
+     * @var \Doctrine\ORM\EntityManagerInterface
+     */
+    private $em;
 
     /**
      * @param string $targetDirectory destination on server
