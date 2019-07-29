@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ item.title }} :: {{ item.tag }} :: Лента новостей{% endblock %}
+{% block body %}
+    <div class="card text-center">
+        <div class="card-body">
+            <h2 class="card-title">
+                {{ item.title }}
+            </h2>
+            {% if item.getImage() %}
+                <img class="card-img-top" src='{{ item.getImage() }}' />
+            {% endif %}
+            {% if item.getPreviewDescription() %}
+                <p class="card-text text-muted">
+                    {{ item.getPreviewDescription() | raw }}
+                </p>
+            {% endif %}
+            <small class="text-muted">
+                <a href="{{ item.href }}" class="badge badge-primary">источник</a>
+            </small>
+        </div>
+        <div class="card-footer">
+            {{ item.tag }},
+            <span class="text-muted">
+                {{ item.publishDate | date("F jS \\a\\t g:ia")}}
+            </span>
+        </div>
+    </div>
+{% endblock %}

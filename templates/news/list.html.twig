@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Лента новостей{% endblock %}
+{% block body %}
+    <h1>Лента новостей</h1>
+    {% for item in news %}
+        <div class="mb-3">
+            {{ include('news/detail.html.twig', { 'item': item }) }}
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,21 @@
+<div class="card text-center">
+    <div class="card-header">
+        {{ item.tag }}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href='{{ path('news_show', {'id': item.getId() }) }}'>
+                {{ item.title }}
+            </a>
+        </h5>
+        {% if item.getPreviewDescription() %}
+            <p class="card-text text-muted">
+                {{ item.getPreviewDescription()[:200] | striptags ~ '... ' }}
+                <a href='{{ path('news_show', {'id': item.getId() }) }}'>Подробнее</a>
+            </p>
+        {% endif %}
+    </div>
+    <div class="card-footer text-muted">
+        {{ item.publishDate | date("F jS \\a\\t g:ia")}}
+    </div>
+</div>
