@@ -9,9 +9,9 @@
             {% if item.getImage() %}
                 <img class="card-img-top" src='{{ item.getImage() }}' />
             {% endif %}
-            {% if item.getPreviewDescription() %}
+            {% if item.getDescription() %}
                 <p class="card-text text-muted">
-                    {{ item.getPreviewDescription() | raw }}
+                    {{ item.getDescription() | raw }}
                 </p>
             {% endif %}
             <small class="text-muted">
