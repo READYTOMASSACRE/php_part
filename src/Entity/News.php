@@ -144,21 +144,4 @@ class News
 
         return $this;
     }
-
-    /**
-     * Applies $data to entity
-     * 
-     * @param array $data
-     * 
-     * @return self
-     */
-    public function applyData(array $data): self
-    {
-        foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (method_exists($this, $method)) call_user_func([$this, $method], $value);
-        }
-
-        return $this;
-    }
 }

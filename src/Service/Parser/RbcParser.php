@@ -3,8 +3,6 @@
 namespace App\Service\Parser;
 
 use App\Service\FileDownloader;
-use App\Entity\News;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -21,6 +19,11 @@ class RbcParser implements ParserInterface
     private $dbDirectory;
 
     /**
+     * @var string
+     */
+    private $defaultSource;
+
+    /**
      * @var \App\Service\FileDownloader
      */
     private $fileDownloader;
@@ -33,11 +36,13 @@ class RbcParser implements ParserInterface
     public function __construct(
         string $targetDirectory,
         string $dbDirectory,
+        string $defaultSource,
         FileDownloader $fileDownloader
     ){
         $this->targetDirectory = $targetDirectory;
         $this->dbDirectory = $dbDirectory;
         $this->fileDownloader = $fileDownloader;
+        $this->defaultSource = $defaultSource;
 
         $this->httpClient = HttpClient::create();
     }
@@ -63,11 +68,21 @@ class RbcParser implements ParserInterface
     }
 
     /**
+     * Returns default source for parser
+     * 
+     * @return string
+     */
+    public function getDefaultSource() : string
+    {
+        return str_replace('{{date}}', time(), $this->defaultSource);
+    }
+
+    /**
      * @inheritdoc
      */
-    public function getPayload(string $source) : array
+    public function getPayload(string $source = null) : array
     {
-        $response = $this->httpClient->request('GET', $source);
+        $response = $this->httpClient->request('GET', $source ?? $this->getDefaultSource());
 
         $content = json_decode($response->getContent(), true);
         $content = $content['items'] ?? [];

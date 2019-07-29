@@ -2,9 +2,6 @@
 
 namespace App\Service\Parser;
 
-use App\Entity\News;
-use Symfony\Contracts\HttpClient\ResponseInterface;
-
 interface ParserInterface
 {
     /**

@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class FileDownloader

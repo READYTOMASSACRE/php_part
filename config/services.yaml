@@ -34,5 +34,12 @@ services:
         arguments:
             $targetDirectory: '%news_directory%'
             $dbDirectory: '%news_directory_db%'
+            $defaultSource: 'https://www.rbc.ru/v10/ajax/get-news-feed/project/rbcnews/lastDate/{{date}}/limit/15'
+
+    App\Service\Parser\RbcUpdater:
+        arguments:
+            $parser: '@App\Service\Parser\RbcParser'
+            $repository: '@App\Repository\NewsRepository'
+            $em: '@Doctrine\ORM\EntityManagerInterface'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
