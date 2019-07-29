@@ -146,7 +146,11 @@ class News
     }
 
     /**
-     * @param array
+     * Applies $data to entity
+     * 
+     * @param array $data
+     * 
+     * @return self
      */
     public function applyData(array $data): self
     {

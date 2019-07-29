@@ -43,13 +43,21 @@ class GetRbcNewsCommand extends Command
             ''
         ]);
 
+        // gets payload from parser
         $payload = $this->parser->getPayload($source);
+
+        // save data by repository
         $this->repository->createOrUpdateByExternalId($payload);
 
         $output->writeln('News successfuly parsed');
     }
 
-    protected function getDefaultSource()
+    /**
+     * Return default source for Rbc parser
+     * 
+     * @return string
+     */
+    protected function getDefaultSource() : string
     {
         $source = 'https://www.rbc.ru/v10/ajax/get-news-feed/project/rbcnews/lastDate/{{date}}/limit/15';
 

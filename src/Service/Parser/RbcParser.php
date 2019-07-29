@@ -10,10 +10,26 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RbcParser implements ParserInterface
 {
+    /**
+     * @var string
+     */
     private $targetDirectory;
+
+    /**
+     * @var string
+     */
     private $dbDirectory;
+
+    /**
+     * @var \App\Service\FileDownloader
+     */
     private $fileDownloader;
 
+    /**
+     * @param string $targetDirectory destination on server
+     * @param string $dbDirectory destination for db
+     * @param \App\Service\FileDownloader $fileDownloader
+     */
     public function __construct(
         string $targetDirectory,
         string $dbDirectory,
@@ -26,12 +42,22 @@ class RbcParser implements ParserInterface
         $this->httpClient = HttpClient::create();
     }
 
-    public function getTargetDirectory()
+    /**
+     * Returns destination file on server
+     * 
+     * @return string
+     */
+    public function getTargetDirectory() : string
     {
         return $this->targetDirectory;
     }
 
-    public function getDbDirectory()
+    /**
+     * Returns destination file for the db
+     * 
+     * @return string
+     */
+    public function getDbDirectory() : string
     {
         return $this->dbDirectory;
     }
@@ -54,6 +80,14 @@ class RbcParser implements ParserInterface
         }, []);
     }
 
+    /**
+     * Get data from one element and
+     * trying fetch for description, image
+     * 
+     * @param array $element Element contains html and publish date
+     * 
+     * @return array Data of element
+     */
     protected function getData(array $element): array
     {
         $crawler = new Crawler($element['html']);
@@ -61,8 +95,10 @@ class RbcParser implements ParserInterface
 
         if (!$crawler->count()) throw new \Exception('Expression "//a" returned 0 elements');
 
+        // get id from html
         $id = $this->getId($crawler);
 
+        // collect data from html
         $data = [
             'title'       => $this->getTitle($crawler),
             'tag'         => $this->getTag($crawler),
@@ -73,6 +109,7 @@ class RbcParser implements ParserInterface
             'description' => null,
         ];
 
+        // try fetch detail news page
         try {
             $descriptionResponse = $this->httpClient->request(
                 'GET',
@@ -92,11 +129,25 @@ class RbcParser implements ParserInterface
         return $data;
     }
 
+    /**
+     * Get Id from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string
+     */
     protected function getId(Crawler $dom) : string
     {
         return str_replace('id_newsfeed_', '', $dom->attr('id'));
     }
 
+    /**
+     * Get Title from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string
+     */
     protected function getTitle(Crawler $dom) : string
     {
         $titleDom = $dom->filterXPath('//span[contains(@class, \'news-feed__item__title\')]');
@@ -106,6 +157,13 @@ class RbcParser implements ParserInterface
         return trim($titleDom->text());
     }
 
+    /**
+     * Get Tag from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string
+     */
     protected function getTag(Crawler $dom) : ?string
     {
         $tagDom = $dom->filterXPath('//span[contains(@class, \'news-feed__item__date-text\')]');
@@ -118,6 +176,13 @@ class RbcParser implements ParserInterface
         return $tag ?? null;
     }
 
+    /**
+     * Get Datetime from element
+     * 
+     * @param array $element
+     * 
+     * @return \DateTime
+     */
     protected function getDatetime(array $element) : \DateTime
     {
         if (!isset($element['publish_date_t'])) throw new \Exception('Field `publish_date_t` must be exists in $element');
@@ -127,11 +192,25 @@ class RbcParser implements ParserInterface
         return $dateTime->setTimestamp($element['publish_date_t']);
     }
 
+    /**
+     * Get Href from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string
+     */
     protected function getHref(Crawler $dom) : string
     {
         return $dom->attr('href');
     }
 
+    /**
+     * Get image from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string|null
+     */
     protected function getImage(Crawler $dom) : ?string
     {
         $imageDom = $dom->filterXPath('//img[@itemprop="image"]');
@@ -144,7 +223,13 @@ class RbcParser implements ParserInterface
 
         return $src ?? null;
     }
-
+    /**
+     * Get description from dom element
+     * 
+     * @param \Symfony\Component\DomCrawler\Crawler $dom
+     * 
+     * @return string|null
+     */
     protected function getDescription(Crawler $dom) : ?string
     {
         $textDom = $dom->filterXPath('//p');

@@ -19,11 +19,24 @@ class FileDownloader
         $this->httpClient = HttpClient::create();
     }
 
-    public function getTargetDirectory()
+    /**
+     * Returns default file directory
+     * 
+     * @return string
+     */
+    public function getTargetDirectory() : string
     {
         return $this->targetDirectory;
     }
 
+    /**
+     * Download file from $source
+     * 
+     * @param string $source
+     * @param string|null $destination
+     * 
+     * @return string Returns destination path on server
+     */
     public function download(string $source, string $destination) : string
     {
         $destination = $destination ?? $this->getTargetDirectory();
@@ -41,6 +54,13 @@ class FileDownloader
         return $fileName;
     }
 
+    /**
+     * Get safe filname from $source
+     * 
+     * @param string $source
+     * 
+     * @return string Returns filename
+     */
     protected function getFilename(string $source) : string
     {
         $file = new \SplFileInfo($source);
