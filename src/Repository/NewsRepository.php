@@ -20,15 +20,20 @@ class NewsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Save data from $items
+     * 
+     * @param array $items
+     * @param int $limit
+     * 
      * @return News[] Returns an array of News objects
      */
-    public function createOrUpdateByExternalId(array $items) : iterable
+    public function createOrUpdateByExternalId(array $items, int $limit = 15) : iterable
     {
         $ids = array_map(function ($item) {
             return $item['externalId'];
         }, $items);
 
-        $fetchedList = $this->findBy(['externalId' => $ids]);
+        $fetchedList = $this->findBy(['externalId' => $ids], ['publishDate' => 'desc'], $limit);
 
         $fetchedList = array_reduce($fetchedList, function ($carry, $item) {
             $carry[$item->getExternalId()] = $item;
